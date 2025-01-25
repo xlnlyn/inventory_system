@@ -1,4 +1,4 @@
-name: Build macOS App
+name: Build Multi-Platform
 
 on:
   push:
@@ -8,7 +8,16 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+        include:
+          - os: macos-latest
+            output_name: inventory_system
+          - os: windows-latest
+            output_name: inventory_system.exe
+    
+    runs-on: ${{ matrix.os }}
     
     steps:
     - uses: actions/checkout@v4
@@ -40,5 +49,4 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: inventory-system-mac
-        path: src/dist/inventory_system
+        name: inventory
