@@ -1,4 +1,4 @@
-name: Build Executable
+name: Build macOS App
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     
@@ -24,17 +24,21 @@ jobs:
         pip install -r requirements.txt
         
     - name: Create icon
-      run: python create_icon.py
+      run: |
+        cd src
+        python create_icon.py
         
     - name: Build executable
       run: |
-        pyinstaller --noconfirm --onefile --windowed --icon=inventory.ico \
+        cd src
+        pyinstaller --noconfirm --onefile --windowed \
+        --icon=inventory.ico \
         --name="inventory_system" \
         --add-data "inventory.ico:." \
         inventory_system.py
         
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: inventory-system-mac
-        path: dist/inventory_system
+        path: src/dist/inventory_system
