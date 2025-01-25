@@ -1,4 +1,9 @@
 from PIL import Image, ImageDraw
+import sys
+
+# 设置输出编码为 UTF-8
+if sys.platform.startswith('win'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 def create_icon():
     # 创建一个 256x256 的透明背景图像
