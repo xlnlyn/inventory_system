@@ -1,0 +1,40 @@
+name: Build Executable
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Create icon
+      run: python create_icon.py
+        
+    - name: Build executable
+      run: |
+        pyinstaller --noconfirm --onefile --windowed --icon=inventory.ico \
+        --name="inventory_system" \
+        --add-data "inventory.ico:." \
+        inventory_system.py
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: inventory-system-mac
+        path: dist/inventory_system
